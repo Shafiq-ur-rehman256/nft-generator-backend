@@ -167,3 +167,85 @@ exports.requestOtp = async(req,res) =>{
         })
     }
 }
+
+exports.verifyOtp = async(req,res) =>{
+
+    const {email, otp} = req.body;
+
+    if(!email || !otp){
+        return res.send({
+            Error: true,
+            message: 'expired or invalid otp'
+        })
+    }
+
+    try {
+        
+        const isValidOtp = await userModel.findOne({
+            email: email,
+            otp: otp,
+            otpExpiry: {
+                $gte: new Date()
+            }
+        })
+
+        if(!isValidOtp){
+            return res.send({
+                Error: true,
+                message: 'expired or invalid otp'
+            })
+        }
+
+        return res.send({
+            Error: false,
+            message: true
+        })
+
+    } catch (error) {
+        return res.send({
+            Error: true,
+            message: `internal server error: ${error.message}`
+        })
+    }
+
+}
+
+exports.changePassword = async(req,res) =>{
+
+    const {email,password} = req.body;
+
+    if(!password || !email){
+        return res.send({
+            Error: false,
+            message: 'please provide password'
+        })
+    }
+
+    try {
+
+        const salt = await bcrypt.genSalt(10);
+        const hashPassword = await bcrypt.hash(password, salt);
+        
+        const updatePassowrd = await userModel.findOneAndUpdate({email:email},{
+            password: hashPassword
+        });
+
+        if(!updatePassowrd){
+            return res.send({
+                Error: true,
+                message: 'unable to update password please retry'
+            })
+        }
+
+        return res.send({
+            Error: false,
+            message: 'password update successfully'
+        })
+        
+    } catch (error) {
+        return res.send({
+            Error: true,
+            message: `internal server error: ${error.message}`
+        })
+    }
+}

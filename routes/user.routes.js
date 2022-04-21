@@ -1,5 +1,5 @@
 const express = require('express');
-const {signup, login, requestOtp} = require('../controllers/user.controller');
+const {signup, login, requestOtp, verifyOtp, changePassword} = require('../controllers/user.controller');
 const app = express();
 
 const router = express.Router();
@@ -15,7 +15,11 @@ router.post('/signup',signup);
 
 router.post('/login', login);
 
-router.post('/verify-email', requestOtp);
+router.post('/request-otp', requestOtp);
+
+router.post('/verify-otp', verifyOtp)
+
+router.post('/update-password', changePassword);
 
 
 exports.userRoute = app.use('/user', router)
