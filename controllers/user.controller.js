@@ -100,6 +100,7 @@ exports.login = async(req,res)=>{
                 email: findUser.email,
                 accountId: findUser.accountId,
                 Id: findUser._id,
+                isGoogleAcc: findUser.isGoogleAcc,
                 token
             }
         })
@@ -198,7 +199,7 @@ exports.verifyOtp = async(req,res) =>{
 
         return res.send({
             Error: false,
-            message: true
+            message: 'Otp Verified'
         })
 
     } catch (error) {
