@@ -4,6 +4,7 @@ const {conectDatabase} = require('./database/index');
 const cors = require('cors');
 const cookeisession = require('cookie-session');
 const passport = require('passport');
+const bodyParser = require('body-parser')
 require('./utils/passport');
 
 const app = express();
@@ -17,7 +18,9 @@ app.use(cookeisession({
 }))
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(express.json({extended: false}));
+// app.use(express.json({extended: false}));
+app.use(bodyParser.json({ limit: '500mb' }));
+app.use(bodyParser.urlencoded({ limit: '500mb', extended: true }));
 app.use(cors())
 app.use(morgan('tiny'));
 
